@@ -1,0 +1,132 @@
+
+%READMYWRITES
+\begin{table}[H]
+\centering
+\caption{Resultado N° 1 \label{tab:result1}}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{C1} & \textbf{C2} \\ \hline
+ & ACCEPTED \\ \hline
+ & PULL \\ \hline
+ACCEPTED &  \\ \hline
+PULL &  \\ \hline
+W10 &  \\ \hline
+R10 &  \\ \hline
+PUSH &  \\ \hline
+R10 &  \\ \hline
+SEND &  \\ \hline
+R10 &  \\ \hline
+ & R0 \\ \hline
+ & R0 \\ \hline
+ & PULL \\ \hline
+ & R10 \\ \hline
+PULL &  \\ \hline
+ & R10 \\ \hline
+ & R10 \\ \hline
+ & R10 \\ \hline
+\end{tabular}
+\end{center}
+\end{center}
+\end{table}
+
+%MONOTONICREADS
+\begin{table}[H]
+\centering
+\caption{Resultado N° 2 \label{tab:result2}}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{C1} & \textbf{C2} \\ \hline
+ & ACCEPTED \\ \hline
+ & PULL \\ \hline
+ACCEPTED &  \\ \hline
+PULL &  \\ \hline
+ & R0 \\ \hline
+W5 &  \\ \hline
+PUSH &  \\ \hline
+ & R0 \\ \hline
+PULL &  \\ \hline
+ & PULL \\ \hline
+ & R5 \\ \hline
+ & W10 \\ \hline
+ & R15 \\ \hline
+ & PUSH \\ \hline
+ & R15 \\ \hline
+ & R15 \\ \hline
+ & R15 \\ \hline
+ & W20 \\ \hline
+ & R35 \\ \hline
+ & PUSH \\ \hline
+ & R35 \\ \hline
+ & R35 \\ \hline
+ & R35 \\ \hline
+PULL &  \\ \hline
+ & PULL \\ \hline
+PULL &  \\ \hline
+ & PULL \\ \hline
+\end{tabular}
+\end{center}
+\end{center}
+\end{table}
+
+%CONSISTENTPREFIX
+\begin{table}[H]
+\centering
+\caption{Resultado N° 3 \label{tab:result3}}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{C1} & \textbf{C2} \\ \hline
+ACCEPTED &  \\ \hline
+PULL &  \\ \hline
+ & ACCEPTED \\ \hline
+ & PULL \\ \hline
+W5 &  \\ \hline
+PUSH &  \\ \hline
+ & PULL \\ \hline
+ & R0 \\ \hline
+ & R0 \\ \hline
+W10 &  \\ \hline
+PUSH &  \\ \hline
+PULL &  \\ \hline
+ & R0 \\ \hline
+PULL &  \\ \hline
+ & R0 \\ \hline
+ & PULL \\ \hline
+ & R10 \\ \hline
+ & R10 \\ \hline
+ & R10 \\ \hline
+ & R10 \\ \hline
+ & R10 \\ \hline
+ & PULL \\ \hline
+ & R5 \\ \hline
+ & R5 \\ \hline
+ & R5 \\ \hline
+ & R5 \\ \hline
+ & R5 \\ \hline
+\end{tabular}
+\end{center}
+\end{center}
+\end{table}
+
+%NOCIRCULARCAUSALITY
+\begin{table}[H]
+\centering
+\caption{Resultado N° 4 \label{tab:result4}}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{C1} & \textbf{C2} \\ \hline
+PULL &  \\ \hline
+ & PULL \\ \hline
+R0 &  \\ \hline
+W10 &  \\ \hline
+PUSH &  \\ \hline
+ & R0 \\ \hline
+ & W5 \\ \hline
+ & PUSH \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+

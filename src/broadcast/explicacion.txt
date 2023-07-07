@@ -1,0 +1,125 @@
+DPA_Init
+  _application_layer_communication_init
+    inicia queue_id_in y queue_id_out con msgget
+  fork
+  si es padre:
+
+    _runtime_init
+      Inicializa MPI
+      Establece comm como WORLD
+      Obtiene my_rank
+      Obtiene num_procs (el que se da por parametro)
+      Inicia el logger
+      Reserva espacio para:
+        cleanup_callback
+        receive_callback
+        request_callback
+        timely_callback
+      _event_queue_init
+        Inicia lista enlazada event_head que contiene como callback un error (para forzar a que se establezca uno)
+      _runtime_register_request_callback
+        En request_callback registra como callback _runtime_request_callback que realiza una acción (recibe desde la aplicación un int de mensaje que identifica a esa acción)
+      _get_application_layer_message_id
+        obtiene id del msj de la capa de la app
+      _send_id_to_application
+        envia un mensaje de tipo ID a la aplicación con su id
+    subsystems_init (***)
+      inicia el tipo de broadcast elegido. Es importante saber que algunos dependen de otro, por ejemplo tob inicia eager y flooding (esto está en el gráfico que muestra la arquitectura).
+    _runtime
+      reserva memoria para buffer de mensajes
+      MPI_Barrier chequea que todos los subsistemas fueron inicializados
+      Se queda en un loop hasta que se cierre la aplicacón en el que:
+        MPI_Iprobe chequea si llegó algún mensaje, si llegó:
+          MPI_Get_Count chequea el tamaño del mensaje recibido
+          Si el buffer no alcanza, se reserva más memoria
+          Se recibe el mensaje
+          Se ejecuta el callback registrado para el mensaje recibido
+  Si es hijo:
+    Obtiene el childpid
+
+(***) Acá se registra un callback para el envío de datos, donde se interactúa con MPI
+  
+
+Ver que en las interfaces, hay una capa de aplicación que, no se por qué, es la que se usa para testing en el main.
+Pero también hay una "Abstraction Logic Implementation" y creo que esas son las functiones que hay que usar. Habría que primero: fijarse si las de la capa de aplicación se relacionan de alguna manera. Segundo: probar aparte estas nuevas que descubrí para ver si hacen lo que necesito que hagan.
+
+
+
+ENVIO DE UN MENSAJE:
+
+ DPA_consensus_based_tob_send //envia por la capa de la app
+ 
+ _consensus_based_tob_init //(***) registra _consensus_based_tob_request_callback
+  _consensus_based_tob_request_callback //recibe de la capa de la app y envía
+   _consensus_based_tob_send
+    _eager_reliable_broadcast_send
+     _best_effort_broadcast_send
+      _best_effort_broadcast_send_callback //ENVIA MENSAJE POR MPI
+
+
+http://mpitutorial.com/tutorials/running-an-mpi-cluster-within-a-lan/
+INSTALACION:
+sudo apt­-get install openssh-server
+ssh-keygen -t dsa
+ssh-copy-id client #ip-address may also be used #for each client and for localhost
+
+configurar passwordless
+https://linuxize.com/post/how-to-setup-passwordless-ssh-login/
+
+ENVIO DE MSJS ENTRE PROCESOS
+pidof tob
+echo "2" > /proc/4391/fd/0
+
+
+
+CONFIGURACION VM
+Las ips de las redes se configuran manualmente
+
+
+
+Application Communication
+Para permitir la máxima libertad a la capa de aplicación, la librería vive en su propio proceso, 
+por lo tanto, este módulo oculta los detalles de comunicación entre el runtime y el proceso de aplicación.
+
+Solo se puede crear una instancia de MPI por proceso. Para evitar la interacción no deseada entre las llamadas de la API de MPI, la capa de aplicación no debe usar MPI o el tiempo de ejecución debe vivir en un nuevo proceso. 
+Este último fue considerado el mejor enfoque, requiriendo un módulo que gestiona la comunicación entre procesos.
+
+
+-------------------------------- old init --------------------------------
+
+para el test2 lo que imprime de received message, no es parte del flujo de ejecucion.
+al parecer se invoca en algun momento a un add_event donde se agregan funciones a ejecutar al recibir un mensaje
+
+dpa.c
+  DPA_Init
+    _application_layer_communication_init
+       crea cola de mensajes
+    pid == 0:
+      _runtime_init(argc, argv, flags)
+        inicia MPI
+        establece MPI_COMM_WORLD
+        inicia log
+        reserva en memoria espacio para 4 vectores de callback
+
+        _event_queue_init();
+        _runtime_register_request_callback(_runtime_request_callback, &runtime_receive_handle);
+          Utility function to register a request callbacks and getting the related handle
+        
+        _get_application_layer_message_id(&application_layer_message_id);
+        _send_id_to_application(application_layer_message_id);
+
+      subsystems_init(flags);
+      _runtime();
+        aloja message_buffer
+        MPI_Barrier synch to check that all subsystems have been initialized
+      _application_layer_communication_cleanup();
+      exit(1);
+
+dpa_Logger.h
+  MIN_LOGLEVEL indica el nivel de log deseado
+
+dpa_Runtime.c
+  _runtime_request_callback:
+    Ejecuta acciones segn runtime_send.message
+
+-------------------------------- old final --------------------------------

@@ -1,0 +1,22 @@
+OASISFormat: 0.4
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+OCamlVersion: >= 4.02.3
+Name: tesis
+Version: 0.1
+Maintainers: Nicolas Len
+Homepage: https://dc.uba.ar
+Synopsis: Tesis GSP
+Authors: nicolaslen@gmail.com
+License: BSD-3-clause
+
+Description: Mi tesis
+
+# This is a comment and this below creates an binary program
+Executable "gsp"
+   Path: src
+   BuildTools:ocamlbuild
+   install: true
+   MainIs: main.ml
+   CompiledObject: best
+   BuildDepends: unix inotify

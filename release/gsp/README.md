@@ -1,0 +1,1 @@
+run.sh [readmywrites|monotonicreads|nocircularcausality|causalarbitration|causalvisibility] testId

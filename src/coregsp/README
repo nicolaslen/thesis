@@ -1,0 +1,14 @@
+sudo apt-get install opam
+opam switch 4.07.0
+eval `opam config env`
+opam init
+
+opam install inotify
+opam install merlin
+https://github.com/Cynddl/sublime-text-merlin
+
+opam install oasis
+
+-- construyo _oasis
+oasis setup -setup-update dynamic
+
